@@ -18,8 +18,10 @@ function fetchData() {
 
 function updatePieChart(data) {
     const attendanceCounts = data.reduce((acc, cur) => {
-        const attendance = cur.Attendance || 'Unknown';
-        acc[attendance] = (acc[attendance] || 0) + 1;
+        // Trim the attendance value and convert to lowercase for case-insensitive comparison
+        const attendance = (cur.Attendance || 'Unknown').trim().toLowerCase();
+        const key = attendance === 'accepted' ? 'Accepted' : attendance === 'denied' ? 'Denied' : 'Unknown';
+        acc[key] = (acc[key] || 0) + 1;
         return acc;
     }, {});
 
