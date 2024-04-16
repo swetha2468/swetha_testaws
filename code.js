@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchData() {
-    Papa.parse("RegisteredUsers.csv", {
+    Papa.parse("https://testbucketprojecttterm.s3.amazonaws.com/Testfolder/RegisteredUsers.csv", {
         download: true,
         header: true,
         dynamicTyping: true,
