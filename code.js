@@ -16,14 +16,57 @@ function fetchData() {
     });
 }
 
+// function updatePieChart(data) {
+//     const attendanceCounts = data.reduce((acc, cur) => {
+//         // Trim the attendance value and convert to lowercase for case-insensitive comparison
+//         const attendance = (cur.Attendance || 'Unknown').trim().toLowerCase();
+//         const key = attendance === 'accepted' ? 'Accepted' : attendance === 'denied' ? 'Denied' : 'Unknown';
+//         acc[key] = (acc[key] || 0) + 1;
+//         return acc;
+//     }, {});
+
+//     const pieChart = new Chart(document.getElementById('pieChart'), {
+//         type: 'pie',
+//         data: {
+//             labels: Object.keys(attendanceCounts),
+//             datasets: [{
+//                 label: 'People Attended/Not',
+//                 data: Object.values(attendanceCounts),
+//                 backgroundColor: ['rgb(75, 192, 192)', 'rgb(255, 99, 132)'],
+//                 hoverOffset: 4
+//             }]
+//         },
+//         options: {
+//             responsive: true,
+//             title: {
+//                 display: true,
+//                 text: 'People Attended/Not'
+//             }
+//         }
+//     });
+// }
+
 function updatePieChart(data) {
+    console.log("Raw data:", data); // Log the raw data for inspection
+
     const attendanceCounts = data.reduce((acc, cur) => {
-        // Trim the attendance value and convert to lowercase for case-insensitive comparison
-        const attendance = (cur.Attendance || 'Unknown').trim().toLowerCase();
-        const key = attendance === 'accepted' ? 'Accepted' : attendance === 'denied' ? 'Denied' : 'Unknown';
-        acc[key] = (acc[key] || 0) + 1;
+        let attendance = cur.Attendance || 'Unknown'; // Handle missing values
+        attendance = attendance.trim(); // Remove any potential white space
+
+        // Normalize to 'Accepted' or 'Denied', or default to 'Unknown'
+        if (attendance.toLowerCase() === 'accepted') {
+            attendance = 'Accepted';
+        } else if (attendance.toLowerCase() === 'denied') {
+            attendance = 'Denied';
+        } else {
+            attendance = 'Unknown'; // This should only occur if there's an unexpected value
+        }
+
+        acc[attendance] = (acc[attendance] || 0) + 1;
         return acc;
     }, {});
+
+    console.log("Attendance counts:", attendanceCounts); // Log the computed attendance counts
 
     const pieChart = new Chart(document.getElementById('pieChart'), {
         type: 'pie',
@@ -32,7 +75,7 @@ function updatePieChart(data) {
             datasets: [{
                 label: 'People Attended/Not',
                 data: Object.values(attendanceCounts),
-                backgroundColor: ['rgb(75, 192, 192)', 'rgb(255, 99, 132)'],
+                backgroundColor: ['rgb(75, 192, 192)', 'rgb(255, 99, 132)', 'rgb(201, 203, 207)'], // Add a color for 'Unknown'
                 hoverOffset: 4
             }]
         },
@@ -45,6 +88,7 @@ function updatePieChart(data) {
         }
     });
 }
+
 
 function updateBarChart(data) {
     const ageGroups = {};
